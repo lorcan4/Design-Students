@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to ensure Inter font is applied globally */
+        body {
+            font-family: 'Inter', sans-serif;
+
+        }
+
+        /* Base icon styling */
+        .icon {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Specific icon sizes for the history section */
+        .icon-section {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Active tab styling */
+        .year-tab-button.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Hidden content for tabs */
+        .year-tab-content {
+            display: none;
+        }
+
+        .year-tab-content.active {
+            display: block;
+        }
+
+        /* Table Styling */
+        .modules-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .modules-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .modules-table th,
+        .modules-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+
+        .modules-table th {
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        .modules-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .modules-table tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Responsive Table adjustments for mobile */
+        @media (max-width: 768px) {
+            .modules-table-container {
+                padding: 10px;
+                margin-left: -10px;
+                margin-right: -10px;
+                width: calc(100% + 20px);
+            }
+
+            .modules-table th,
+            .modules-table td {
+                padding: 8px 12px;
+            }
+
+            /* Allow line breaks in ELP column */
+            .modules-table td[data-label="ELP"] {
+                white-space: normal;
+            }
+
+            .modules-table-container::-webkit-scrollbar {
+                height: 5px;
+            }
+
+            .modules-table-container::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-100 antialiased flex flex-col">
+    <main class="flex-grow p-4 md:p-6 lg:p-8">
+        <section class="bg-white rounded-xl shadow-md p-4 md:p-6 lg:p-8">
+            <div class="flex items-center space-x-3 mb-6">
+
+                <div style="background-color: rgb(25, 181, 254); padding: 8px; border-radius: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="4"></rect>
+                        <path d="M3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"></path>
+                        <line x1="10" y1="12" x2="14" y2="12"></line>
+                    </svg>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">Historique</h2>
+                    <p class="text-sm text-gray-600">Modules et semestres validés</p>
+                </div>
+                <svg class="icon w-5 h-5 text-gray-400 ml-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-4" aria-label="Year Tabs">
+                    <button id="year-1-tab-btn"
+                        class="year-tab-button active py-2 px-4 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-blue-300 hover:text-blue-500 focus:outline-none transition-colors duration-200">
+                        1ère année
+                    </button>
+                    <button id="year-2-tab-btn"
+                        class="year-tab-button py-2 px-4 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-blue-300 hover:text-blue-500 focus:outline-none transition-colors duration-200">
+                        2ème année
+                    </button>
+                    <button id="year-3-tab-btn"
+                        class="year-tab-button py-2 px-4 text-sm font-medium text-gray-700 border-b-2 border-transparent hover:border-blue-300 hover:text-blue-500 focus:outline-none transition-colors duration-200">
+                        3ème année
+                    </button>
+                </nav>
+            </div>
+
+            <div id="year-1-content" class="year-tab-content active" style="  font-family: 'Tajawal', sans-serif;
+  font-weight: 200">
+                <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                    <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 1</h3>
+
+                    <!-- Blue semi-circle badge -->
+                    <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                        style="background-color: rgb(25, 181, 254);">
+                        <span class="text-white text-sm font-semibold">10 (VR)</span>
+                    </div>
+                </div>
+
+                <div class="modules-table-container">
+                    <table class="modules-table">
+                        <thead>
+                            <tr>
+                                <th>ELP</th>
+                                <th>Note</th>
+                                <th>PT.J</th>
+                                <th>Résultat</th>
+                                <th>Session</th>
+                                <th>Année</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="ELP">INTRODUCTION AUX <br> SCIENCES ECONOMIQUES</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">INITIATION AU <br> MANAGEMENT</td>
+                                <td data-label="Note">9</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">TERMINOLOGIE ECONOMIQUE <br>ET FINANCIERE</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">COMPTABILITE<br> GENERALE 1</td>
+                                <td data-label="Note">9</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">SIMULATION DE <br> GESTION</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">MICROECONOMIE</td>
+                                <td data-label="Note">12</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">INTRODUCTION <br>AU DROIT</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2022</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br><br>
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                        <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 2</h3>
+
+                        <!-- Blue semi-circle badge -->
+                        <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                            style="background-color: rgb(25, 181, 254);">
+                            <span class="text-white text-sm font-semibold">10 (VR)</span>
+                        </div>
+                    </div>
+                    <div class="modules-table-container">
+                        <table class="modules-table">
+                            <thead>
+                                <tr>
+                                    <th>ELP</th>
+                                    <th>Note</th>
+                                    <th>PT.J</th>
+                                    <th>Résultat</th>
+                                    <th>Session</th>
+                                    <th>Année</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="ELP">MACROECONOMIE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">ECONOMIE DU<br> MAROC</td>
+                                    <td data-label="Note">11</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">COMPTABILITE <br>GENERALE 2</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">STATISTIQUE <br>DESCRIPTIVE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">MATHEMATIQUES<br> FONDAMENTALES</td>
+                                    <td data-label="Note">9</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">LANGUE APPLIQUEE :<br> ANGLAIS 1</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">DROIT DE<br> L'ENTREPRISE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2022</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div id="year-2-content" class="year-tab-content" style="  font-family: 'Tajawal', sans-serif;
+  font-weight: 200">
+                <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                    <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 3</h3>
+
+                    <!-- Blue semi-circle badge -->
+                    <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                        style="background-color: rgb(25, 181, 254);">
+                        <span class="text-white text-sm font-semibold">11.81 (VR)</span>
+                    </div>
+                </div>
+
+                <div class="modules-table-container">
+                    <table class="modules-table">
+                        <thead>
+                            <tr>
+                                <th>ELP</th>
+                                <th>Note</th>
+                                <th>PT.J</th>
+                                <th>Résultat</th>
+                                <th>Session</th>
+                                <th>Année</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="ELP">ECONOMIE <br> INTERNATIONALE</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">LANGUE APPLIQUEE <br> ET ANGLAIS :2</td>
+                                <td data-label="Note">11</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">TERMINOLOGIE ECONOMIQUE <br>ET FINANCIERE</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP"> PROBABILITES </td>
+                                <td data-label="Note">15</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">INFORMATIQUE DE <br> GESTION</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">MICROECONOMIE</td>
+                                <td data-label="Note">12</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">ANALYSE MICRO <br>ECONOMIQUE - II</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2023</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br><br>
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                        <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 4</h3>
+
+                        <!-- Blue semi-circle badge -->
+                        <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                            style="background-color: rgb(25, 181, 254);">
+                            <span class="text-white text-sm font-semibold">10.67 (VR)</span>
+                        </div>
+                    </div>
+                    <div class="modules-table-container">
+                        <table class="modules-table">
+                            <thead>
+                                <tr>
+                                    <th>ELP</th>
+                                    <th>Note</th>
+                                    <th>PT.J</th>
+                                    <th>Résultat</th>
+                                    <th>Session</th>
+                                    <th>Année</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="ELP">ECONOMIE <br> INDUSTRIELLE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP"> MARCHES <br> FINANCIERS</td>
+                                    <td data-label="Note">11</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP"> ANALYSE CONJONCTURELLE <br>ET PREVISIONS </td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">STATIST- ECHANTILLONNAGE <br>ET ESTIMATIONIQUE </td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">MATHEMATIQUES<br> FONDAMENTALES</td>
+                                    <td data-label="Note">12</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">ECONOMETRIE DE BASE<br> DE BASE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">OUTILS INFORMATIQUES <br> APPLIQUES A L'ECONOMIE</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">VR</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2023</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <!-- 3 -->
+            <div id="year-3-content" class="year-tab-content" style="  font-family: 'Tajawal', sans-serif;
+  font-weight: 200">
+                <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                    <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 5</h3>
+
+                    <!-- Blue semi-circle badge -->
+                    <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                        style="background-color: rgb(25, 181, 254);">
+                        <span class="text-white text-sm font-semibold">12.98 (VR)</span>
+                    </div>
+                </div>
+
+                <div class="modules-table-container">
+                    <table class="modules-table">
+                        <thead>
+                            <tr>
+                                <th>ELP</th>
+                                <th>Note</th>
+                                <th>PT.J</th>
+                                <th>Résultat</th>
+                                <th>Session</th>
+                                <th>Année</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="ELP">ECONOMETRIE II </td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">GEOPOLITIQUE</td>
+                                <td data-label="Note">11</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP"> ANALYSE DES <br>DONNEES</td>
+                                <td data-label="Note">16</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">V</td>
+                                <td data-label="Session">1</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP"> INTELLIGENCE ET <br> VEILLE ECONOMIQUE </td>
+                                <td data-label="Note">13</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">INFORMATIQUE DE <br> GESTION</td>
+                                <td data-label="Note">10</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                            <tr>
+                                <td data-label="ELP">MICROECONOMIE</td>
+                                <td data-label="Note">12</td>
+                                <td data-label="PT.J"></td>
+                                <td data-label="Résultat">VR</td>
+                                <td data-label="Session">2</td>
+                                <td data-label="Année">2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br><br>
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="bg-white rounded-xl mb-6 relative overflow-hidden p-6">
+                        <h3 class="text-lg font-semibold text-gray-900">SEMESTRE 6</h3>
+
+                        <!-- Blue semi-circle badge -->
+                        <div class="absolute top-0 right-0 w-28 h-20 bg-blue-400 rounded-bl-full flex items-center justify-center shadow-lg"
+                            style="background-color: rgb(25, 181, 254);">
+                            <span class="text-white text-sm font-semibold">14.04 (VR)</span>
+                        </div>
+                    </div>
+                    <div class="modules-table-container">
+                        <table class="modules-table">
+                            <thead>
+                                <tr>
+                                    <th>ELP</th>
+                                    <th>Note</th>
+                                    <th>PT.J</th>
+                                    <th>Résultat</th>
+                                    <th>Session</th>
+                                    <th>Année</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="ELP">EVALUATION DES <br> POLITIQUES PUBLIQUES</td>
+                                    <td data-label="Note">11</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">2</td>
+                                    <td data-label="Année">2024</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">MATHEMATIQUES<br> FONDAMENTALES</td>
+                                    <td data-label="Note">11</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2024</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">COMPTABILITE <br>GENERALE 2</td>
+                                    <td data-label="Note">10</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2024</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="ELP">STAGE DE FIN D'ETUDE</td>
+                                    <td data-label="Note">17</td>
+                                    <td data-label="PT.J"></td>
+                                    <td data-label="Résultat">V</td>
+                                    <td data-label="Session">1</td>
+                                    <td data-label="Année">2024</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const year1TabBtn = document.getElementById('year-1-tab-btn');
+            const year2TabBtn = document.getElementById('year-2-tab-btn');
+            const year3TabBtn = document.getElementById('year-3-tab-btn');
+            const year1Content = document.getElementById('year-1-content');
+            const year2Content = document.getElementById('year-2-content');
+            const year3Content = document.getElementById('year-3-content');
+
+            function showYearTab(tabName) {
+                // Remove 'active' class from all year tab buttons and content
+                document.querySelectorAll('.year-tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.year-tab-content').forEach(content => content.classList.remove('active'));
+
+                // Add 'active' class to the selected year tab button and content
+                if (tabName === 'year-1') {
+                    year1TabBtn.classList.add('active');
+                    year1Content.classList.add('active');
+                } else if (tabName === 'year-2') {
+                    year2TabBtn.classList.add('active');
+                    year2Content.classList.add('active');
+                } else if (tabName === 'year-3') {
+                    year3TabBtn.classList.add('active');
+                    year3Content.classList.add('active');
+                }
+            }
+
+            // Event Listeners for year tab buttons
+            year1TabBtn.addEventListener('click', () => showYearTab('year-1'));
+            year2TabBtn.addEventListener('click', () => showYearTab('year-2'));
+            year3TabBtn.addEventListener('click', () => showYearTab('year-3'));
+
+            // Initialize to show the 1st year tab by default
+            showYearTab('year-1');
+        });
+    </script>
+</body>
+
+</html>

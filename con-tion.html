@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+
+        .icon {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confetti-fall 5s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="header-glass shadow-sm p-4 flex items-center justify-between sticky top-0 z-50 border-b border-gray-100">
+        <div class="flex items-center space-x-2">
+            <svg class="icon text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zM12 22l-8-4V9l8 4 8-4v9l-8 4z"/>
+            </svg>
+            <div class="text-sm font-semibold text-gray-800 flex flex-col">
+               <a href="./Student.html"> <span>كلية الاقتصاد والتسيير - كلميم</span></a>
+                <span class="text-xs text-gray-500">FACULTÉ D'ÉCONOMIE وَتَسْيِيرِ-GUELMIM</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-600 text-xs px-3 py-1 rounded-full font-medium border border-blue-200">2024/2025</span>
+            <button class="p-2 rounded-full hover:bg-gray-100/50 transition-colors">
+                <svg class="icon text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="4" y1="18" x2="20" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 md:p-6 lg:p-8 flex items-center justify-center relative overflow-hidden">
+        <!-- Confetti elements will be added here by JS -->
+        
+        <section class="bg-white rounded-2xl shadow-xl p-8 md:p-10 lg:p-12 text-center max-w-4xl w-full relative z-10 border border-gray-100">
+            <div class="absolute -top-6 -right-6 w-16 h-16 bg-yellow-400 rounded-full opacity-20"></div>
+            <div class="absolute -bottom-6 -left-6 w-20 h-20 bg-blue-400 rounded-full opacity-20"></div>
+            
+            <div class="mb-8 animate-float">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-6">
+                Félicitations!
+            </h1>
+            
+            <div class="text-xl md:text-2xl text-gray-700 mb-8 space-y-4">
+                <p>ELOUAD DRISS</p>
+                <p class="font-medium">Nous sommes ravis de célébrer vos remarquables réussites !</p>
+                <p class="text-lg">Votre dévouement et votre travail acharné vous ont menés à ce moment de succès.</p>
+            </div>
+
+            <div class="mb-10 relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl opacity-20 blur-lg -z-10"></div>
+                <img 
+                    src="./images-removebg-preview.png" 
+                    alt="Students celebrating graduation" 
+                    class="mx-auto rounded-xl shadow-md w-full max-w-2xl object-cover h-64 md:h-80 lg:h-96 transition-transform duration-500 hover:scale-105"
+                    onerror="this.onerror=null;this.src='https://placehold.co/800x500/f8fafc/1e293b?text=Graduation+Celebration';"
+                />
+            </div>
+
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                 Le succès n'est pas un accident. C'est le travail acharné, la persévérance, l'apprentissage, les études, le sacrifice et, surtout, l'amour de ce que l'on fait. 
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#" class="inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                    View Your Results
+                    <svg class="icon ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+                <a href="#" class="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 border border-gray-200 transition-all duration-300">
+                    Share Achievement
+                    <svg class="icon ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white/80 p-4 text-center text-sm text-gray-600 border-t border-gray-100">
+        <p>كلية الاقتصاد والتسيير - كلميم © 2024 جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create confetti
+            function createConfetti() {
+                const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#ef4444'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    confetti.style.animationDelay = (Math.random() * 2) + 's';
+                    confetti.style.width = (Math.random() * 12 + 6) + 'px';
+                    confetti.style.height = (Math.random() * 12 + 6) + 'px';
+                    
+                    document.querySelector('main').appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+            }
+
+            // Initial confetti
+            createConfetti();
+            
+            // More confetti every 3 seconds
+            setInterval(createConfetti, 3000);
+        });
+    </script>
+</body>
+</html>
